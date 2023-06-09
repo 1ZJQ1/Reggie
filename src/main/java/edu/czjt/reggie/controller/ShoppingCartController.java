@@ -23,8 +23,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/shoppingCart")
 public class ShoppingCartController {
-    @Autowired
-    RabbitTemplate rabbitTemplate;
 
     @Autowired
     private ShoppingCartService shoppingCartService;
@@ -73,14 +71,6 @@ public class ShoppingCartController {
             cartServiceOne = shoppingCart;
 
 
-            //集成rabbitmq每次添加购物车消费者进行监听
-            Map<String, Object> map = new HashMap<>();
-            map.put("createTime", shoppingCart.getCreateTime());
-            map.put("dishName", shoppingCart.getName());
-            map.put("dishID", shoppingCart.getDishId());
-            map.put("dishFlaour", shoppingCart.getDishFlavor());
-            //将消息携带绑定键值：TestDirectRouting 发送到交换机TestDirectExchange
-            rabbitTemplate.convertAndSend("TestDirectExchange", "TestDirectRouting", map);
 
         }
 

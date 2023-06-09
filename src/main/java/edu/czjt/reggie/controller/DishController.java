@@ -12,13 +12,13 @@ import edu.czjt.reggie.service.CategoryService;
 import edu.czjt.reggie.service.DishFlavorService;
 import edu.czjt.reggie.service.DishService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -28,6 +28,9 @@ import java.util.stream.Collectors;
 @RequestMapping("/dish")
 @Slf4j
 public class DishController {
+    @Autowired
+    RabbitTemplate rabbitTemplate;
+
     @Autowired
     private DishService dishService;
     @Autowired
@@ -164,6 +167,17 @@ public class DishController {
             item.setDishId(dishDto.getId());
             return item;
         }).collect(Collectors.toList());
+
+
+
+
+        //集成rabbitmq每次添加购物车消费者进行监听
+        Map<String, Object> map = new HashMap<>();
+        map.put("flavor", dishDto.getFlavors());
+        map.put("categoryName", dishDto.getCategoryName());
+
+        //将消息携带绑定键值：TestDirectRouting 发送到交换机TestDirectExchange
+        rabbitTemplate.convertAndSend("TestDirectExchange", "TestDirectRouting", map);
 
         dishFlavorService.saveBatch(dishFlavors);
 

@@ -11,7 +11,7 @@ import java.util.Map;
 public class Consumerconfig {
     @RabbitHandler
     public void process(Map testMessage) {
-        System.out.println("DirectReceiver监听到消费者添加了购物车，添加了: " + testMessage.toString());
+        System.out.println("DirectReceiver监听到消费者更新操作添加了: " + testMessage.toString());
     }
 
 }

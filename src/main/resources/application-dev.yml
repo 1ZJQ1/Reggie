@@ -31,3 +31,8 @@ logging:
       database: 0
       host: 127.0.0.1
       port: 6379
+  rabbitmq:
+    host: 43.138.58.9
+    port: 5672
+    username: hz
+    password: 123456
